@@ -12,7 +12,7 @@ class KafkaConsumerService():
     Initialises a kafka consumer with the specified Topic name and configurations
     """
 
-    def __init__(self, consumer_config: dict, topic_name):
+    def __init__(self, consumer_config: dict, topic_name:str):
         if not consumer_config or len(consumer_config) == 0:
             logging.error("Error creating a consumer, no consumer config supplied")
             raise Exception("You must pass in a consumer config for Kafka consumer.")
@@ -20,8 +20,9 @@ class KafkaConsumerService():
         group_id = consumer_config['group_id']
         print(group_id)
         try:
-            self.consumer = KafkaConsumer(topic_name, group_id= group_id,auto_offset_reset='earliest',value_deserializer=lambda m: json.loads(m.decode('ascii')))
-            self.consumer.subscribe([topic_name])
+            # self.consumer = KafkaConsumer(topic_name, group_id= group_id,auto_offset_reset='earliest',value_deserializer=lambda m: json.loads(m.decode('ascii')))
+            self.consumer = KafkaConsumer(topic_name, **consumer_config)
+            # self.consumer.subscribe([topic_name])
         except Exception as exc:
             raise ValueError("Error occured while constructing the consumer :{0}".format(exc))
 

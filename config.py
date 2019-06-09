@@ -11,7 +11,7 @@ class LocalConfig:
     bootstrap_server = config.get('kafka', 'bootstrap_server')
     group_id = config.get('kafka', 'group_id')
     topic1 = config.get('kafka', 'topic1')
-    max_poll_records = config.get('kafka', 'max_poll_records')
+    max_poll_records = config.getint('kafka', 'max_poll_records')
 
 
 
