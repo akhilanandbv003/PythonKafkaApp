@@ -12,7 +12,6 @@ class LocalConfig:
     group_id = config.get('kafka', 'group_id')
     topic1 = config.get('kafka', 'topic1')
     max_poll_records = config.getint('kafka', 'max_poll_records')
-    batch_size = config.getint('kafka', 'batch_size')
     auto_offset_reset = config.get('kafka', 'auto_offset_reset')
 
 
