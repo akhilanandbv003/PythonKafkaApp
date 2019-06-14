@@ -1,11 +1,12 @@
 import json
 import logging
 import traceback
-
+from s3.s3_helper import write_to_s3
 from kafka import KafkaConsumer
 
 from config import configuration
 
+config = configuration['local']
 
 class KafkaConsumerService():
     """
@@ -35,11 +36,19 @@ class KafkaConsumerService():
 
     def consume(self):
         raw_messages = self.consumer.poll(10000)
+        if len(raw_messages) > 0:
+            for consumer_records in raw_messages.values():
+                for consumer_record in consumer_records:
+                    print(consumer_record.value)
 
-        for consumer_records in raw_messages.values():
-            for consumer_record in consumer_records:
-                print(consumer_record.value)
-                self.consumer.commit()
+                    try:
+                        write_to_s3(consumer_record.value)
+                    except Exception as exc:
+                        self.logger.exception("Consumer service raised exception: [{exc} consumer record: "
+                                              "[{record}]".format(exc=exc, record=consumer_record))
+                    finally:
+                        self.consumer.commit()
+        self.consumer.commit()
 
 
 def main():
@@ -54,7 +63,7 @@ def main():
     timeout_ms: ms to wait if messages are not available in buffer
 
     """
-    config = configuration['local']
+
     KAFKA_BOOTSTRAP_SERVER = config.bootstrap_server
     print(KAFKA_BOOTSTRAP_SERVER)
     consumer_config = dict(bootstrap_servers=KAFKA_BOOTSTRAP_SERVER,

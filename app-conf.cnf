@@ -1,9 +1,12 @@
 [database]
+url=postgres//
+dbname=postgres
 host=localhost
 user=postgres
-passwd=root123
-db=write-math
+password=
+db=postgres
 port=5432
+schema=vandaley_industries
 
 [kafka]
 ssl=true
